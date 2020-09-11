@@ -1,0 +1,36 @@
+Sólo debes hacer git checkout commitC donde commitC es el hash de dicho commit.
+
+Ejemplo:
+
+Buscas en el log de git cuál es el commit al que quieres regresar:
+
+git log
+
+Tendrás algo como esto:
+
+commit eb9b03c2e22305c965b610aa84a7d316e5cb208d
+Author: oscar <oscar@oscar.(none)>
+Date:   Thu Sep 19 16:05:51 2013 +0200
+
+    commit3
+
+commit 96046152e2515d651d777bac66602e4a50654f49
+Author: oscar <oscar@oscar.(none)>
+Date:   Thu Sep 19 00:13:37 2013 +0200
+
+    commit2
+
+commit 23abd7d49c00541fcac17acb1babd7a60a3e7c6e
+Author: oscar <oscar@oscar.(none)>
+Date:   Wed Sep 18 23:53:25 2013 +0200
+
+    commit1 
+Puedes ver más información sobre git log acá.
+
+Luego haces esto:
+
+git checkout eb9b03c
+
+Para más información sobre git checkout puedes ver acá.
+
+Entonces tu HEAD estará apuntando hacia el commit3, siendo el resultado que necesitas.
