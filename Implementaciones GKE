@@ -1,0 +1,120 @@
+
+
+
+$ cat service-nginx.yaml
+
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: nginx
+  spec:
+    type: LoadBalancer
+    selector:
+      app: nginx
+    ports:
+    - protocol: TCP
+      port: 60000
+
+
+$ cat nginx-canary.yaml
+    
+  apiVersion: apps/v1 
+  kind: Deployment
+  metadata:
+    name: nginx-canary
+    labels:
+      app: nginx
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: nginx
+    template:
+      metadata:
+        labels:
+          app: nginx
+          track: canary
+          Version: 1.9.1
+      spec:
+        containers:
+        - name: nginx
+          image: nginx:1.9.1
+          ports:
+          - containerPort: 80
+
+
+$ cat nginx-deployment.yaml
+
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: nginx-deployment
+    labels:
+      app: nginx
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: nginx
+    template:
+      metadata:
+        labels:
+          app: nginx
+      spec:
+        containers:
+        - name: nginx
+          image: nginx:1.7.9
+          ports:
+          - containerPort: 80
+
+
+
+
+En Cloud Shell, escriba el siguiente comando para configurar la variable de entorno para la zona y el nombre del clúster.
+
+export my_zone=us-central1-a
+export my_cluster=standard-cluster-1
+
+Configure la finalización de la pestaña kubectl en Cloud Shell.
+
+source <(kubectl completion bash)
+
+En Cloud Shell, escriba el siguiente comando para crear un clúster de Kubernetes.
+
+gcloud container clusters create $my_cluster --num-nodes 3  --enable-ip-alias --zone $my_zone
+
+En Cloud Shell, configure el acceso a su clúster para la herramienta de línea de comandos kubectl con el siguiente comando:
+
+gcloud container clusters get-credentials $my_cluster --zone $my_zone
+
+
+kubectl apply -f ./nginx-deployment.yaml
+
+kubectl get deployments
+
+
+Para volver a escalar el pod hasta tres réplicas, ejecute el siguiente comando:
+
+kubectl scale --replicas=3 deployment nginx-deployment
+
+kubectl get deployments
+
+kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.9.1 --record
+
+
+Para ver el estado del lanzamiento, ejecute el siguiente comando:
+
+kubectl rollout status deployment.v1.apps/nginx-deployment
+
+
+Ver el historial de implementación de la implementación.
+
+kubectl rollout history deployment nginx-deployment
+
+Ver los detalles de la última revisión de implementación
+
+kubectl rollout history deployment/nginx-deployment --revision=3
+
+
+
+-

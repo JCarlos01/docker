@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+     kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: www.mycoolapp.mydomain.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mycoolapp
+          servicePort: 80
+
+helm install stable/nginx-ingress
+
+kubectl get services --all-namespaces
+
+
+# *nginx-ingress-controller
